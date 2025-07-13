@@ -8,10 +8,11 @@ import { useFilterData } from '../hooks/useFilterData';
 const Dashboard: React.FC = () => {
   const { data, setData, filters, updateFilter } = useData();
   const { availableOptions } = useFilterData(data, filters);
-  
+
+  // Load large dataset for real filter behavior
   useEffect(() => {
     const loadData = async () => {
-      const dataset = await fetchDataset('small');
+      const dataset = await fetchDataset('large'); // ✅ load large dataset
       setData(dataset);
     };
     loadData();
@@ -24,7 +25,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard">
       <div className="filters-container">
-        {columns.map(column => (
+        {columns.map((column) => (
           <FilterDropdown
             key={column}
             column={column}
@@ -34,7 +35,7 @@ const Dashboard: React.FC = () => {
           />
         ))}
       </div>
-      
+
       <DataTable />
     </div>
   );

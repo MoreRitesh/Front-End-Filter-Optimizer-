@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { AvailableOptions } from '../utils/types';
+import './FilterDropdown.css';
 
 interface FilterDropdownProps {
   column: string;
@@ -8,18 +8,18 @@ interface FilterDropdownProps {
   onSelect: (values: number[]) => void;
 }
 
-const FilterDropdown: React.FC<FilterDropdownProps> = ({ 
-  column, 
-  selected, 
+const FilterDropdown: React.FC<FilterDropdownProps> = ({
+  column,
+  selected,
   availableOptions,
-  onSelect 
+  onSelect,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const filteredOptions = useMemo(() => {
     if (!searchTerm) return availableOptions;
-    return availableOptions.filter(opt => 
+    return availableOptions.filter((opt) =>
       opt.toString().includes(searchTerm)
     );
   }, [availableOptions, searchTerm]);
@@ -36,21 +36,23 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
   return (
     <div className="filter-dropdown">
-      <button onClick={() => setIsOpen(!isOpen)}>
-        {column} {selected.size > 0 ? `(${selected.size})` : ''}
+      <button onClick={() => setIsOpen((prev) => !prev)}>
+        {column}
+        {selected.size > 0 ? `: ${Array.from(selected).join(', ')}` : ''}
+        {selected.size > 0 ? ` (${selected.size})` : ''}
       </button>
-      
+
       {isOpen && (
         <div className="dropdown-menu">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Type to search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          
+
           <div className="options-list">
-            {filteredOptions.map(opt => (
+            {filteredOptions.map((opt) => (
               <div key={opt} className="option-item">
                 <input
                   type="checkbox"
@@ -58,9 +60,17 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
                   checked={selected.has(opt)}
                   onChange={() => toggleOption(opt)}
                 />
-                <label htmlFor={`${column}-${opt}`}>{opt}</label>
+                <label htmlFor={`${column}-${opt}`} className="right-label">
+                  {opt}
+                </label>
               </div>
             ))}
+
+            {filteredOptions.length === 0 && (
+              <div style={{ padding: '0.5rem', color: '#999' }}>
+                No options found
+              </div>
+            )}
           </div>
         </div>
       )}

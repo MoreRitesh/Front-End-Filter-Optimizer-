@@ -4,17 +4,18 @@ import TableRow from './TableRow';
 import { useFilterData } from '../hooks/useFilterData';
 
 const DataTable: React.FC = () => {
-  const { 
+  const {
     data,
     filters,
-    currentPage, 
-    setCurrentPage, 
-    rowsPerPage 
+    currentPage,
+    setCurrentPage,
+    rowsPerPage
   } = useData();
-  
+
   const { filteredData } = useFilterData(data, filters);
-  
+
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+
   const pageData = useMemo(() => {
     const start = currentPage * rowsPerPage;
     return filteredData.slice(start, start + rowsPerPage);
@@ -24,26 +25,31 @@ const DataTable: React.FC = () => {
     return data[0] ? Object.keys(data[0]) : [];
   }, [data]);
 
+  const from = currentPage * rowsPerPage + 1;
+  const to = Math.min((currentPage + 1) * rowsPerPage, filteredData.length);
+
   return (
     <div className="data-table">
       <div className="pagination-controls">
-        <button 
+        <button
           disabled={currentPage === 0}
           onClick={() => setCurrentPage(p => p - 1)}
         >
-          Previous
+          ‹
         </button>
-        
-        <span>Page {currentPage + 1} of {pageCount}</span>
-        
-        <button 
+
+        <span>
+          {from} - {to} / {filteredData.length}
+        </span>
+
+        <button
           disabled={currentPage >= pageCount - 1}
           onClick={() => setCurrentPage(p => p + 1)}
         >
-          Next
+          ›
         </button>
       </div>
-      
+
       <div className="table-container">
         <table>
           <thead>
@@ -55,11 +61,7 @@ const DataTable: React.FC = () => {
           </thead>
           <tbody>
             {pageData.map((row, index) => (
-              <TableRow 
-                key={`row-${index}`} 
-                row={row} 
-                columns={columns} 
-              />
+              <TableRow key={`row-${index}`} row={row} columns={columns} />
             ))}
           </tbody>
         </table>

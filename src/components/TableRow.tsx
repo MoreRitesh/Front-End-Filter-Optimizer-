@@ -9,8 +9,10 @@ interface TableRowProps {
 const TableRow: React.FC<TableRowProps> = ({ row, columns }) => {
   return (
     <tr>
-      {columns.map(col => (
-        <td key={`${col}-${row[col]}`}>{row[col]}</td>
+      {columns.map((col) => (
+        <td key={`${col}-${row[col]}`}>
+          {row[col]}
+        </td>
       ))}
     </tr>
   );
